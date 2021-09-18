@@ -16,12 +16,14 @@ class HWZSpider(scrapy.Spider):
                 yield response.follow(threadLink)
 
         # retrieving title, author & content from every post in the thread
-        for post in response.xpath('//div[has-class("block-body js-replyNewMessageContainer")]'):
-            yield {
-                'title': response.xpath('//div[has-class("p-title")]/h1/text()').get(),
-                'author': post.xpath('//a[has-class("username")]/text()').get(),
-                'content': post.xpath('string(//div[@class=("bbWrapper")])').extract(),
-            }
+        for postList in response.xpath('//div[has-class("block-body js-replyNewMessageContainer")]'):
+            for post in postList.xpath('article[has-class("message message--post js-post js-inlineModContainer")]'):
+                yield {
+                    'topic': response.xpath('//div[has-class("p-title")]/h1/text()').get(),
+                    'author': post.xpath('div//a[has-class("username")]/text()').get(),
+                    'joinDate': post.xpath('div//dl[has-class("pairs")]/dd/text()').get(),
+                    'content': post.xpath('string(div//div[@class=("bbWrapper")])').extract(),
+                }
 
         # to scroll through & iterate through all threads & pages
         next_page = response.xpath('//a[@class=("pageNav-jump pageNav-jump--next")]/@href').get()
