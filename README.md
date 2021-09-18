@@ -4,4 +4,5 @@
 Directory: ```AS1```
 
 ## Assignment 2 - Spark
-Directory: ```AS2```
+Directory: ```AS2```<br />
+For Scrapy codes for scraped data in Assignment 2 Question 3, refer to ```AS1``` directory.
