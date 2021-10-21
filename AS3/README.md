@@ -47,6 +47,14 @@ Disclaimer: For this assignment, it is assumed that there will be overlaps betwe
 > <b> Example: If the current time is 12.03, it will show results from sliding window 12.02-12.04 and 12.03-12.05. It will NOT show results from 12.00-12.02 as the current time doesn't lie within the sliding window. </b>
 <br>
 
+### Configuring Spark Checkpoint
+1) Change the checkpoint location in ```getTopAuthors.py``` and ```getTopWords.py``` to your own checkpoint location. 
+2) Refresh your spark checkpoint by running the following commands:
+```
+hadoop fs -rm -r -f /user/<name>/spark-checkpoint
+hadoop fs -mkdir /user/<name>/spark-checkpoint
+```
+
 The results being output to the console consist of top 10 words and authors within a window that lies within the timestamp.
 
 
