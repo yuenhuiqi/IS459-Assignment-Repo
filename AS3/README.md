@@ -70,7 +70,7 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 getTopA
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 getTopWords.py
 ```
   
-3) To get BOTH Top 10 Authors and Top 10 Words, run the following command: 
+3) To get BOTH Top 10 Authors and Top 10 Words, run the following command (If this doesn't output both dataframes, try step 1 and step 2 instead.): 
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 getTopAuthorsAndWords.py
 ```
