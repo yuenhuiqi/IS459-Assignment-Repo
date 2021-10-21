@@ -21,7 +21,7 @@ class HWZSpider(scrapy.Spider):
                 yield {
                     'topic': response.xpath('//div[has-class("p-title")]/h1/text()').get(),
                     'author': post.xpath('div//a[has-class("username")]/text()').get(),
-                    'joinDate': post.xpath('div//dl[has-class("pairs")]/dd/text()').get(),
+                    # 'joinDate': post.xpath('div//dl[has-class("pairs")]/dd/text()').get(),
                     'content': post.xpath('string(div//div[@class=("bbWrapper")])').extract(),
                 }
 
