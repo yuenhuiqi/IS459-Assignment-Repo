@@ -56,7 +56,7 @@ hadoop fs -mkdir /user/<name>/spark-checkpoint
 ```
 ### Output Results 
 
-The results being output to the console consist of top 10 words and authors within a window that lies within the timestamp.
+The results being output to the console consist of top 10 words and authors within a window that lies within the current timestamp.
 
 
 1) Get Top 10 Authors within 2 minute window, run the following command:
