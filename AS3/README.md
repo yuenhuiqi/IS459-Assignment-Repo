@@ -1,46 +1,41 @@
-# Huiqi's IS459 Assignment 1
+# Huiqi's IS459 Assignment 3
 
 ## About
-In this repository, we'll be using Scrapy to crawl the threads & posts from the  HardwareZone PC Gaming Forum. The scraped data will then be stored into MongoDB.
+In this repository, we'll be using Scrapy to crawl the threads & posts from the HardwareZone PC Gaming Forum. The scraped data will then be passed over to Kafka as a Kafka message, in the ```hwz-output``` topic. 
 <br> 
-#### Directory 1: ```Assignment1``` (Default for submission)
-This folder contains the codes necessary to crawl the data of Author, Title and Content from the HardwareZone PC Gaming Forum and store it into MongoDB.
 
-#### Directory 2: ```Assignment1_NLP``` (For Surprise Me component)
-This folder contains the codes to crawl the data of Author, Title and Content, and pass the content through additional pipelines to undergo Text Pre-processing through Normalization and Lemmatization of the Content of every post crawled. The new content will also be stored into MongoDB. This is made possible with the help of the spaCy library. 
-
-
-## Setting up your virtual environment
+## Setting up your environment
 Ensure that you already have the following installed before you begin:
-> 1) MongoDB 5.0
-> 2) Python 3 or later
+> 1) Python 3 or later
+> 2) Kafka, Spark, Scrapy
 
-The virtual environment has already been set up in this repository. To activate the virtual environment, run the following command:
+## Starting up Kafka & Consuming Kafka Messages
+Step 1: Open terminal and head over to your Kafka directory titled ```kafka_2.12-2.8.0```. If you are running on Mac, run the following command:
 ```
-source bin/activate
-```
-In the event you run into any issues with missing modules/libraries, run the following commands:
-```
-pip install Scrapy
-pip install pymongo
-pip install -U spacy
-pip install -U spacy-lookups-data
-python -m spacy download en_core_web_sm
+cd /usr/local/Cellar/kafka_2.12-2.8.0
 ```
 
-## Scrapy & MongoDB Configurations
-To ensure that the crawled data by Scrapy is successfully stored in MongoDB, do ensure that the connection configuration to MongoDB is correct. Navigate over to ```Assignment1/hardwarezone/hardwarezone/settings.py```
-<br><br>By default, you should see the following configurations: 
+Step 2: Start Zookeeper by running the following command: 
 ```
-MONGODB_SERVER = "localhost"
-MONGODB_PORT = 27017
-MONGODB_DB = "hardwarezone"
+bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
-<br> Do change the port number if necessary. By default, it will be connected to MongoDB's connection port ```27017```.
+
+Step 3: Open up another tab in terminal and repeat step 1. Afterwards, start up the Kafka environment by running the following command:
+
+```
+bin/kafka-server-start.sh config/server.properties
+```
+
+Step 4: Repeat Step 1 in another terminal tab. Start consuming messages that were output by the Scrapy crawling process by running the following command: 
+```
+bin/kafka-console-consumer.sh --topic hwz-output --from-beginning --bootstrap-server localhost:9092
+```
+
+Once this is done, view the next section on how to crawl data via Scrapy and output them into this Kafka topic. 
 
 ## Initializing & Running Scrapy
-Ensure that you are in the directory of ```Assignment1/hardwarezone/hardwarezone```. To start crawling the HardwareZone PC Gaming Forum, run the following command:
+Ensure that you are in the directory of ```AS3/hardwarezone```. To start crawling the HardwareZone PC Gaming Forum, run the following command:
 ```
-scrapy runspider spiders/spider.py
+scrapy crawl hardwarezone
 ```
-You will be able to view the crawled data being stored in MongoDB. 
+To view output of the crawling process, refer to the previous section Step 4 on how you can consume the Kafka messages. 
