@@ -54,6 +54,7 @@ Disclaimer: For this assignment, it is assumed that there will be overlaps betwe
 hadoop fs -rm -r -f /user/<name>/spark-checkpoint
 hadoop fs -mkdir /user/<name>/spark-checkpoint
 ```
+### Output Results 
 
 The results being output to the console consist of top 10 words and authors within a window that lies within the timestamp.
 
