@@ -49,7 +49,7 @@ if __name__ == "__main__":
                     .count()
 
     authorsDF = authors.select("window", "author", "count") \
-                        .where( unix_timestamp("window.start") - unix_timestamp(current_timestamp()) >= -60) \
+                        .where( unix_timestamp("window.end") == unix_timestamp(current_timestamp())) \
                         .orderBy(desc("count")).limit(10)
 
     # Select top authors to output into the console

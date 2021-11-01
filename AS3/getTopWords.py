@@ -54,7 +54,7 @@ if __name__ == "__main__":
                     .count()
 
     wordsDF = words.select("window", "word", "count") \
-                    .where( unix_timestamp("window.start") - unix_timestamp(current_timestamp()) >= -60) \
+                    .where( unix_timestamp("window.end") == unix_timestamp(current_timestamp())) \
                     .orderBy(desc("count")).limit(10)
 
     # Select top words to output into the console
