@@ -43,8 +43,8 @@ To view output of the crawling process, refer to the previous section Step 4 on 
 
 ## Running Python files for Spark Streaming
 
-Disclaimer: For this assignment, it is assumed that there will be overlaps between each window (sliding window). As such, the top 10 words and authors gathered every 1 minute will consist of counts from overlapping windows. The results are also filtered such that the sliding window lies within the current timestamp. <br>
-> <b> Example: If the current time is 12.03, it will show results from sliding window 12.02-12.04 and 12.03-12.05. It will NOT show results from 12.00-12.02 as the current time doesn't lie within the sliding window. </b>
+Disclaimer: For this assignment, it will only display completed windows as the output. As such, there will be no output in Batch 1 (aka 12.01pm) as there are no completed windows yet. <br>
+> <b> Example: If the current time is 12.03, it will show results from sliding window 12.01-12.03  </b>
 <br>
 
 ### Configuring Spark Checkpoint
