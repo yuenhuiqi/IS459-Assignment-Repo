@@ -6,7 +6,7 @@ from celery import Celery
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hwz_monitor.settings')
 # use mongdodb as backend and redis as broker
 app = Celery('hwz_monitor', \
-    backend='mongodb://localhost:27017/test', \
+    backend='mongodb://localhost:27017/celery_backend', \
     broker='redis://localhost:6379/0')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')

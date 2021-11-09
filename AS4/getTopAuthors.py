@@ -1,17 +1,9 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
-from pyspark.sql.functions import *
+from pyspark.sql.functions import explode
+from pyspark.sql.functions import split, concat_ws, substring, from_json, col, lower, regexp_replace, window, current_timestamp, desc
+from pyspark.ml.feature import StopWordsRemover, RegexTokenizer, Tokenizer
 
-def parse_data_from_kafka_message(sdf, schema):
-    assert sdf.isStreaming == True, "DataFrame doesn't receive streaming data"
-    # changed separator to '",' instead, because there are commas that exists in topics & posts as well. 
-    col = split(sdf['value'], '",')
-
-    #split attributes to nested array in one Column
-    #now expand col to multiple top-level columns
-    for idx, field in enumerate(schema):
-        sdf = sdf.withColumn(field.name, col.getItem(idx).cast(field.dataType))
-    return sdf.select([field.name for field in schema])
 
 if __name__ == "__main__":
 
@@ -23,12 +15,12 @@ if __name__ == "__main__":
     df = spark.readStream \
             .format("kafka") \
             .option("kafka.bootstrap.servers", "localhost:9092") \
-            .option("subscribe", "hwz-output") \
-            .option("startingOffsets", "latest") \
+            .option("subscribe", "scrapy-output") \
+            .option("startingOffsets", "earliest") \
             .load()
 
     #Parse the fields in the value column of the message
-    lines = df.selectExpr("CAST(value AS STRING)")
+    lines = df.selectExpr("CAST(value AS STRING)", "timestamp")
 
     #Specify the schema of the fields
     hardwarezoneSchema = StructType([ \
@@ -38,29 +30,27 @@ if __name__ == "__main__":
         ])
 
     #Use the function to parse the fields
-    lines = parse_data_from_kafka_message(lines, hardwarezoneSchema)
-    lines = lines.withColumn("timestamp", current_timestamp())
+    lines = lines.withColumn('data', from_json(col("value"), schema=hardwarezoneSchema)).select('timestamp', 'data.*')
 
-    # Get top 10 authors with most posts in 2 minute window
-    # Top 10 authors with their number of posts will be output to the console every minute.
+    # Top-10 users with most posts in 2 minutes
+    users_df = lines.select("timestamp", "author") \
+        .groupBy(window("timestamp", "2 minutes", "1 minute"), "author").count() \
+        .withColumn("start", col("window")["start"]) \
+        .withColumn("end", col("window")["end"]) \
+        .withColumn("current_timestamp", current_timestamp()) \
+            
+    topAuthorsDF = users_df.filter(users_df.end < users_df.current_timestamp) \
+                            .orderBy(desc('window'), desc("count")).limit(10)
 
-    authors = lines.select("timestamp", "author") \
-                    .groupBy(window("timestamp", "2 minutes", "1 minutes"), lines.author) \
-                    .count()
-
-    authorsDF = authors.select("window", "author", "count") \
-                        .where( unix_timestamp("window.start") - unix_timestamp(current_timestamp()) >= -60)  \
-                        .orderBy(desc("count")).limit(10)
-
-    # Select top authors to output into the console
-    topAuthors = authorsDF.writeStream \
-        .queryName("WriteTopAuthors") \
+    # #Select the content field and output
+    contents = topAuthorsDF \
+        .writeStream \
+        .queryName("WriteContent1") \
+        .trigger(processingTime="1 minute") \
         .outputMode("complete") \
         .format("console") \
         .option("checkpointLocation", "hdfs://localhost:9000/user/huiqi/spark-checkpoint") \
-        .option("truncate", False) \
-        .trigger(processingTime='60 seconds') \
         .start()
 
-    # #Start the job and wait for the incoming messages
-    topAuthors.awaitTermination()
+    #Start the job and wait for the incoming messages
+    contents.awaitTermination()
