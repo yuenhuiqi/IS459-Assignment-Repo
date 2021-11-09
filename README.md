@@ -13,5 +13,5 @@ For Scrapy codes for scraped data in Assignment 2 Question 3, refer to ```AS1```
 ## Assignment 3 - Spark Streaming
 Directory: ```AS3```<br />
 
-## Assignment 3 - Visualization
+## Assignment 4 - Visualization
 Directory: ```AS4```<br />
