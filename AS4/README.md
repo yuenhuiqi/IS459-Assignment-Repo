@@ -33,7 +33,7 @@ bin/kafka-server-start.sh config/server.properties
 
 Step 4: Repeat Step 1 in another terminal tab. Start consuming messages that were output by the Scrapy crawling process by running the following command: 
 ```
-bin/kafka-console-consumer.sh --topic scrapy-output --from-beginning --bootstrap-server localhost:9092
+bin/kafka-console-consumer.sh --topic spark-output --from-beginning --bootstrap-server localhost:9092
 ```
 
 Once this is done, view the next section on how to crawl data via Scrapy and output them into this Kafka topic. <br><br>
@@ -45,17 +45,7 @@ scrapy crawl hardwarezone
 ```
 To view output of the crawling process, refer to the previous section Step 4 on how you can consume the Kafka messages. <br><br>
 
-## Running Python files for Spark Streaming
-
-### Configuring Spark Checkpoint
-1) Change the checkpoint location in ```getTopAuthors.py``` to your own checkpoint location. 
-2) Refresh your spark checkpoint by running the following commands:
-```
-hadoop fs -rm -r -f /user/<name>/spark-checkpoint
-hadoop fs -mkdir /user/<name>/spark-checkpoint
-```
-
-### Output Results to Kafka Topic
+## Running Python files for Spark Streaming & output to Kafka Topic
 
 The results being output to the console consist of top 10 authors within a window that lies within the current timestamp.
 
