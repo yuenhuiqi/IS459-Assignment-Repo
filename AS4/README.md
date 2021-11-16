@@ -4,6 +4,10 @@
 In this repository, we'll be using Scrapy to crawl the threads & posts from the HardwareZone PC Gaming Forum. The scraped data will then be passed over to Kafka as a Kafka message, in the ```scrapy-output``` topic. Afterwards, we will dump the incoming message stream into the ```spark-output``` message stream and pass them over to a Django backend to visualize the top 10 authors on a Django web application.
 <br><br>
 
+## Results Screenshot (For Grading)
+<img src='PostCountBarChart.png'>
+<img src='JSONResponse.png'>
+
 ## Setting up your environment
 Ensure that you already have the following installed before you begin:
 > 1) Python 3 or later
@@ -59,11 +63,14 @@ The results being output to the console consist of top 10 authors within a windo
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 getTopAuthors.py
 ```
+Important Note: Timeout set here for Kafka topic consumer is 60000ms. Results will only be available for display on barchart only after a few minutes. 
 
 ## Django Web Application 
 1. To start the Django server, run the following command: 
 ```python manage.py runserver```
 2. Endpoint for incoming data is at ```localhost:8000/dashboard/kafka```
+3. To view barchart, head to: ```localhost:8000/dashboard/barchart```
+
 
 
 
