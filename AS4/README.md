@@ -1,7 +1,7 @@
 # Huiqi's IS459 Assignment 4
 
 ## About
-In this repository, we'll be using Scrapy to crawl the threads & posts from the HardwareZone PC Gaming Forum. The scraped data will then be passed over to Kafka as a Kafka message, in the ```scrapy-output``` topic. Afterwards, we can then process the incoming message stream and pass them over to a Django backend to visualize the top 10 authors on a Django web application.
+In this repository, we'll be using Scrapy to crawl the threads & posts from the HardwareZone PC Gaming Forum. The scraped data will then be passed over to Kafka as a Kafka message, in the ```scrapy-output``` topic. Afterwards, we will dump the incoming message stream into the ```spark-output``` message stream and pass them over to a Django backend to visualize the top 10 authors on a Django web application.
 <br><br>
 
 ## Setting up your environment
@@ -51,7 +51,7 @@ hadoop fs -rm -r -f /user/<name>/spark-checkpoint
 hadoop fs -mkdir /user/<name>/spark-checkpoint
 ```
 
-### Output Results 
+### Output Results to Kafka Topic
 
 The results being output to the console consist of top 10 authors within a window that lies within the current timestamp.
 
