@@ -7,4 +7,5 @@ urlpatterns = [
     path('post/ajax/post', views.uploadPost, name = 'upload_post'),
     path('post-count-chart', views.get_post_count, name = 'post-count-chart'),
     path('barchart', views.get_barchart, name = 'get-bar-chart'),
+    path('kafka', views.get_kafka, name = 'get-kafka'),
 ]

@@ -8,7 +8,7 @@
 </div>
 
 <div id="container" style = "width: 75%;">
-  <canvas id="post-count-chart" data-url="{% url 'post-count-chart' %}"> </canvas>
+  <canvas id="get-kafka" data-url="{% url 'get-kafka' %}"> </canvas>
 </div>
 {% endblock content %}
 
@@ -19,21 +19,21 @@
 
     $(function () {
 
-      var $postcountchart = $("#post-count-chart");
+      var $postcountchart = $("#get-kafka");
       $.ajax({
         url: $postcountchart.data("url"),
         success: function (data) {
-
+          
           var ctx = $postcountchart[0].getContext("2d");
 
           new Chart(ctx, {
             type: 'bar',
             data: {
-              labels: data.labels,
+              labels: data.author,
               datasets: [{
                 label: 'Post Count',
                 backgroundColor: 'blue',
-                data: data.data
+                data: data.count
               }]          
             },
             options: {
@@ -42,7 +42,7 @@
                   ticks: {
                     beginAtZero: true,
                     min: 0,
-                    max: 180
+                    max: 1000
                   }
                 }]
               },

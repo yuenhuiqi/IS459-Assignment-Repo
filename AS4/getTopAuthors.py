@@ -1,9 +1,8 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from pyspark.sql.functions import explode
-from pyspark.sql.functions import split, concat_ws, substring, from_json, col, lower, regexp_replace, window, current_timestamp, desc
+from pyspark.sql.functions import split, concat_ws, substring, from_json, to_json, col, lower, regexp_replace, window, current_timestamp, desc
 from pyspark.ml.feature import StopWordsRemover, RegexTokenizer, Tokenizer
-
 
 if __name__ == "__main__":
 
@@ -41,16 +40,16 @@ if __name__ == "__main__":
             
     topAuthorsDF = users_df.filter(users_df.end < users_df.current_timestamp) \
                             .orderBy(desc('window'), desc("count")).limit(10)
-
-    # #Select the content field and output
-    contents = topAuthorsDF \
+                            
+    contents = topAuthorsDF.selectExpr("to_json(struct(*)) AS value") \
         .writeStream \
         .queryName("WriteContent1") \
         .trigger(processingTime="1 minute") \
         .outputMode("complete") \
-        .format("console") \
+        .format("kafka") \
+        .option("kafka.bootstrap.servers", "localhost:9092" ) \
+        .option("topic", "spark-output") \
         .option("checkpointLocation", "hdfs://localhost:9000/user/huiqi/spark-checkpoint") \
         .start()
 
-    #Start the job and wait for the incoming messages
     contents.awaitTermination()
