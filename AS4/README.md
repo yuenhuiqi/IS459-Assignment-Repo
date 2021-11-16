@@ -60,7 +60,10 @@ The results being output to the console consist of top 10 authors within a windo
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 getTopAuthors.py
 ```
 
-
+## Django Web Application 
+1. To start the Django server, run the following command: 
+```python manage.py runserver```
+2. Endpoint for incoming data is at ```localhost:8000/dashboard/kafka```
 
 
 
